@@ -1,0 +1,385 @@
+---
+title: Azure Services Integration Documentation
+---
+# Azure Services Integration Documentation
+
+- [Overview](#AzureServicesIntegrationDocumentation-O)
+
+- [What's New in v6.1](#AzureServicesIntegrationDocumentation-W)
+
+  - [How to Trigger an Import - General Process](#AzureServicesIntegrationDocumentation-H)
+
+  - [Previously Supported Services (8 Services)](#AzureServicesIntegrationDocumentation-P)
+
+  - [New Services in v6.1 (5 Services)](#AzureServicesIntegrationDocumentation-N)
+
+- [Detailed Service Documentation](#AzureServicesIntegrationDocumentation-D)
+
+  - [Azure Kubernetes Service (AKS)](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Functions](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Cosmos DB](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Storage Accounts](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Key Vault](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Oracle Database](#AzureServicesIntegrationDocumentation-A)
+
+  - [Mapping into CMDB/BSM](#AzureServicesIntegrationDocumentation-M)
+
+  - [Azure PostgreSQL](#AzureServicesIntegrationDocumentation-A)
+
+  - [Azure Neo4J](#AzureServicesIntegrationDocumentation-A)
+
+  - [Enhanced Relationship Processing](#AzureServicesIntegrationDocumentation-E)
+
+  - [Key Enhancements](#AzureServicesIntegrationDocumentation-K)
+
+  - [Global Prerequisites & Configuration](#AzureServicesIntegrationDocumentation-G)
+
+  - [Import Scheduling Best Practices](#AzureServicesIntegrationDocumentation-I)
+
+  - [Coverage Analysis & Value Proposition](#AzureServicesIntegrationDocumentation-C)
+
+  - [Business Value by Tier](#AzureServicesIntegrationDocumentation-B)
+
+  - [Integration Benefits](#AzureServicesIntegrationDocumentation-I)
+
+# Overview
+
+Virima v6.1 significantly expands Azure cloud infrastructure discovery capabilities by adding 8 new modern cloud services to the existing foundation of 15+ previously supported services. This update focuses on containerized workloads, serverless computing, modern databases, and security services to provide comprehensive Azure environment visibility.
+
+# **What's New in v6.1**
+
+**Eight New Services Added:**
+
+- Azure Kubernetes Service (AKS) - Managed Kubernetes container orchestration
+
+- Azure Functions - Serverless compute platform
+
+- Azure Cosmos DB - Multi-model NoSQL database service
+
+- Azure Storage Accounts (Enhanced) - Blob, file, queue, and table storage
+
+- Azure Key Vault - Secrets and key management service
+
+- Azure Oracle Database - Oracle DB on Azure infrastructure
+
+- Azure PostgreSQL - Managed PostgreSQL database service
+
+- Azure Neo4J - Graph database service on Azure
+
+**Enhanced Relationship Mapping:**
+
+- Complete container orchestration visibility (AKS ↔ Agent Pools ↔ Nodes)
+
+- Serverless infrastructure dependencies (Functions ↔ App Service Plans ↔ Storage)
+
+- Database component hierarchies (Cosmos DB ↔ Databases, PostgreSQL ↔ Databases)
+
+- Cross-service relationships via Service ID for comprehensive service mapping
+
+## **How to Trigger an Import - General Process**
+
+**Phase 1: Configure Azure Credentials (One-time setup)**
+
+- **Navigate to Credentials Module**
+
+  - Log into Virima platform
+
+  - Click on **Admin** in the top right corner
+
+  - Click on **Credentials** module
+
+  - Click **Add New Credential**
+
+- **Configure Azure Account Credentials**
+
+  - Select credential type: **Azure Account**
+
+  - Enter the following details:
+
+    - **Tenant ID**: Your Azure Active Directory tenant ID
+
+    - **Client ID**: Service principal application ID
+
+    - **Client Secret**: Service principal secret key
+
+    - **Subscription ID**: Your Azure subscription ID
+
+  - Click **Save** to store the credential
+
+**Phase 2: Create and Run Import Job**
+
+- **Navigate to Azure Import**
+
+  - Click on **Discovery Scan** in the left navigation panel
+
+  - Click on **Import from Azure**
+
+- **Create Import Job**
+
+  - Click **Select Action and then Import**
+
+  - Select the previously configured Azure credential from dropdown
+
+  - **Choose Import Items**: Check the services you want to import:
+
+    - ☑️ Azure Kubernetes Service
+
+    - ☑️ Azure Functions
+
+    - ☑️ Azure Cosmos DB
+
+    - ☑️ Azure Storage Accounts
+
+    - ☑️ Azure Key Vault
+
+    - ☑️ Azure Oracle Database
+
+    - ☑️ Azure PostgreSQL
+
+    - ☑️ Azure Neo4J
+
+    - ☑️ Other Azure services as needed
+
+  - Enter **Import Name**
+
+  - Click **ADD**
+
+**Phase 3: Schedule Recurring Imports**
+
+- **Configure Scheduled Discovery**
+
+  - In the Discovery Scan module click on Schedule Scans and Import
+
+  - click on azure radio button and click on add.
+
+  - Set frequency (Daily, Weekly, Custom)
+
+  - Define time window for import execution
+
+  - Save schedule configuration
+
+- **Complete Service Coverage Matrix**
+
+## Previously Supported Services (8 Services)
+
+These services were available in previous Virima versions with established discovery patterns:
+
+| **Service**                      | **Coverage Tier** | **Key Properties**                        | **Components**                                       | **Primary Relationships**           |
+|----------------------------------|-------------------|-------------------------------------------|------------------------------------------------------|-------------------------------------|
+| Azure Virtual Machine            | Full (~90%)       | VM Size, OS Type, Power State, IP Address | Network Interface                                    | Resource Group, VNet, NSG           |
+| Azure Virtual Machine Scale Sets | Full (~85%)       | Instance Count, VM Size, Scaling Policy   | Azure VMSS Instance, Network Interface, Storage Disk | Resource Group, VNet, Load Balancer |
+| Azure Network Security Group     | Full (~80%)       | Security Rules, Network Interfaces        | None                                                 | VNet, VM, Subnet                    |
+| Azure Application Gateway        | Full (~80%)       | SKU, Backend Pools, Listeners             | Backend Pool → Target                                | Resource Group, VNet                |
+| Azure App Service                | Medium (~75%)     | Runtime Stack, SKU, Always On             | None                                                 | Resource Group, App Service Plan    |
+| Azure SQL Server                 | Full (~85%)       | Version, Admin Login, Firewall Rules      | Database                                             | Resource Group, VNet                |
+| Azure Virtual Network            | Full (~85%)       | Address Space, DNS Servers, Subnets       | Azure Subnet                                         | Resource Group, NSG                 |
+| Azure SQL Managed Instance       | Full (~85%)       | vCores, Storage Size, License Type        | Database                                             | Resource Group, VNet, Subnet        |
+
+## New Services in v6.1 (5 Services)
+
+These services are newly implemented with modern cloud-native focus:
+
+| **Service**                    | **Coverage Tier**  | **Key Properties**                                       | **Components**                                  | **Primary Relationships**                         |
+|--------------------------------|--------------------|----------------------------------------------------------|-------------------------------------------------|---------------------------------------------------|
+| Azure Kubernetes Service (AKS) | Full (~90%)        | Cluster Config, Node Pools, K8s Version, Network Profile | Agent Pool (~85%), Azure Kubernetes Node (~90%) | Resource Group, VNet, NSG, VMSS                   |
+| Azure Functions                | Medium-Full (~75%) | Runtime Stack, Hosting Plan, Networking, Storage         | None                                            | Resource Group, App Service Plan, Storage Account |
+| Azure Cosmos DB                | Full (~85%)        | API Type, Consistency Level, Multi-Region, Throughput    | Database (~80%)                                 | Resource Group, VNet, Database Components         |
+| Azure Storage Accounts         | Full (~85%)        | Account Type, Replication, Security, Storage Services    | Storage Service (~75%)                          | Resource Group, VNet, Storage Service Components  |
+| Azure Key Vault                | Medium (~70%)      | SKU, Access Policies, Network Rules, Compliance          | None                                            | Resource Group, VNet                              |
+| Azure Oracle Database          | Medium (~65%)      | VM Config, OS Profile, Storage Profile, Database         | Database (~70%)                                 | Resource Group, VNet, Database Components         |
+| Azure PostgreSQL               | Full (~80%)        | Version, SKU, HA Config, Security Settings               | Database (~75%)                                 | Resource Group, VNet, Database Components         |
+| Azure Neo4J                    | Medium (~60%)      | VM Config, OS Profile, Storage Profile                   | None                                            | Resource Group, VNet, Subnet                      |
+
+# **Detailed Service Documentation**
+
+## Azure Kubernetes Service (AKS)
+
+### Overview
+
+Azure Kubernetes Service (AKS) is a fully managed Kubernetes container orchestration service. New in Virima v6.1, this integration discovers AKS clusters, agent pools, and worker nodes across all Azure regions, providing comprehensive visibility into containerized infrastructure..
+
+### Supported Properties (Imported)
+
+**AKS Cluster Properties**
+
+| **Property**         | **Description**                 | **Example**                                                                    |
+|----------------------|---------------------------------|--------------------------------------------------------------------------------|
+| Cluster Name         | User-defined cluster name       | production-aks-cluster                                                         |
+| Service ID           | UniqueAzure resource identifier | /subscriptions/.../resourceGroups/.../providers/Microsoft.ContainerService/... |
+| Resource Group       | Parent resource group           | rg-aks-prod                                                                    |
+| Location             | Azure region                    | eastus                                                                         |
+| Subscription ID      | Azure subscription identifier   | 12345678-1234-1234-1234-123456789012                                           |
+| AKS Tier             | Service tier                    | Free, Standard                                                                 |
+| Kubernetes Version   | K8s version running             | 1.27.3                                                                         |
+| Node Resource Group  | Auto-created RG for nodes       | MC_rg-aks-prod_cluster_eastus                                                  |
+| FQDN                 | Cluster endpoint URL            | cluster-abc123.hcp.eastus.azmk8s.io                                            |
+| DNS Prefix           | DNS prefix for cluster          | cluster                                                                        |
+| State                | Cluster operational state       | Succeeded, Running                                                             |
+| Network Plugin       | CNI plugin type                 | azure, kubenet                                                                 |
+| Network Plugin Mode  | CNI mode                        | overlay, bridge                                                                |
+| Load Balancer SKU    | LB tier                         | Standard, Basic                                                                |
+| Service CIDRs        | Service IP ranges               | 10.0.0.0/16                                                                    |
+| Pod CIDRs            | Pod IP ranges                   | 10.244.0.0/16                                                                  |
+| RBAC Enabled         | Role-based access control       | true, false                                                                    |
+| Workload Identity    | Workload identity enabled       | true, false                                                                    |
+| Azure Policy Enabled | Policy addon status             | true, false                                                                    |
+| Monitoring Enabled   | Container insights              | true, false                                                                    |
+| Key Vault Provider   | Secret store CSI driver         | true, false                                                                    |
+
+**Agent Pool Properties**
+
+| **Property**         | **Description**       | **Example**                   |
+|----------------------|-----------------------|-------------------------------|
+| Pool Name            | Agent pool identifier | nodepool1                     |
+| Agent Pool Type      | Pool type             | System, User                  |
+| Node Count           | Current node count    | 3                             |
+| VM Size              | Azure VM SKU          | Standard_DS2_v2               |
+| OS Type              | Operating system      | Linux                         |
+| OS SKU               | OS distribution       | Ubuntu, AzureLinux            |
+| Kubernetes Version   | K8s version on nodes  | 1.27.3                        |
+| Disk Size (GB)       | OS disk size          | 128                           |
+| Disk Type            | Storage type          | Premium_LRS, Standard_SSD_LRS |
+| Max Pods Per Node    | Pod capacity          | 30, 110                       |
+| Auto Scaling Enabled | Autoscaler status     | true, false                   |
+| Min/Max Node Count   | Scaling boundaries    | 1/10                          |
+| Availability Zones   | AZ distribution       | 1,2,3                         |
+
+**Kubernetes Node Properties**
+
+| **Property**       | **Description**      | **Example**                       |
+|--------------------|----------------------|-----------------------------------|
+| Host Name          | Kubernetes node name | aks-nodepool1-12345678-vmss000000 |
+| Instance ID        | VMSS instance ID     | 0                                 |
+| VM Size            | Azure VM SKU         | Standard_DS2_v2                   |
+| Node Status        | K8s node status      | Ready, NotReady                   |
+| Node Role          | Node role            | agent                             |
+| Kubernetes Version | K8s version          | 1.27.3                            |
+| Container Runtime  | Container engine     | containerd                        |
+| OS Image           | OS image version     | AKSUbuntu-2204gen2containerd      |
+| Time Created       | Creation timestamp   | 2024-01-15T10:30:00Z              |
+
+### Unsupported Properties (Not Imported)
+
+- Pod and container details
+
+- Kubernetes workloads (deployments, services, ingress)
+
+- RBAC roles and bindings
+
+- Kubernetes secrets and configmaps
+
+- Network policies
+
+- Persistent volumes and claims
+
+- Custom resource definitions
+
+### Prerequisites
+
+- **Azure Permissions Required**
+
+```json
+{
+"Name": "AKS Discovery Role",
+"Description": "Permissions for Virima AKS discovery",
+"Actions": [
+"Microsoft.ContainerService/managedClusters/read",
+"Microsoft.ContainerService/managedClusters/agentPools/read",
+"Microsoft.Compute/virtualMachineScaleSets/read",
+"Microsoft.Compute/virtualMachineScaleSets/virtualMachines/read",
+"Microsoft.Resources/subscriptions/resourceGroups/read"
+],
+"DataActions": [],
+"NotActions": [],
+"NotDataActions": [],
+"AssignableScopes": ["/subscriptions/{subscription-id}"]
+}
+```
+
+- **Network Requirements**
+
+  - HTTPS (443) outbound to management.azure.com
+
+  - DNS resolution for Azure endpoints
+
+  - No direct cluster API access required
+
+- **Azure Configuration Requirements**
+
+  - AKS clusters in "Succeeded" state
+
+  - Service principal or managed identity configured
+
+  - Node resource groups accessible
+
+### **Mapping into CMDB/BSM**
+
+- **Service Representation**
+
+  - **Blueprint**: Azure Kubernetes Service AKS
+
+  - **Primary Key**: Service ID
+
+  - **Asset Name**: Cluster name
+
+  - **Location**: Azure Region
+
+- **Component Hierarchy**
+
+Azure Kubernetes Service
+
+├── Agent Pool (Component)
+
+│ └── Azure Kubernetes Node (Component)
+
+├── SECURED_BY → Azure Network Security Group
+
+├── CONTAINS → Azure Subnet
+
+└── USES → Azure Virtual Network
+
+### **Best Practices & Limitations**
+
+**Integration Recommendations**
+
+- Combine with VM discovery for node details
+
+- Import VNet/NSG for network mapping
+
+- Schedule with Container Registry imports
+
+- Enable Azure Monitor integration
+
+**Limitations**
+
+- No real-time pod metrics
+
+- Application layer not discovered
+
+- No cost allocation data
+
+- Point-in-time snapshots only
+
+## Azure Functions
+
+### Overview
+
+Azure Functions provides serverless compute capabilities. New in v6.1, this integration discovers Function Apps and their configurations, providing visibility into serverless infrastructure without exposing function code or sensitive configuration.
+
+### Supported Properties (Imported)
+
+| **Property**        | **Description**       | **Example**                               |
+|---------------------|-----------------------|-------------------------------------------|
+| App Name            | Function app name     | my-functions-app                          |
+| Service ID          | Azure resource ID     | /subscriptions/.../sites/my-functions-app |
+| Resource Group      | Parent resource group | rg-functions-prod                         |
+| Runtime Stack       | Programming runtime   | dotnet, node, python, java                |
+| Runtime Version     | Runtime version       | 3.1, 14.x, 3.9                            |
+| OS Type             | Operating system      | Windows, Linux                            |
+| Hosting Plan Type   | Plan type             | Consumption, Premium, Dedicated           |
+| App Service Plan    | Associated plan       | ASP
